@@ -1,8 +1,14 @@
 package com.example.demo.dao;
 
 import java.sql.Date;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name ="user")
-public class User {
+public class User implements UserDetails{
 	
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
@@ -59,31 +65,11 @@ public class User {
 		
 	}
 	
-	
-
-	public int isIsactive() {
-		return isactive;
-	}
-
-
-	public void setIsactive(int isactive) {
-		this.isactive = isactive;
-	}
-
-
-
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", contactno=" + contactno + ", role=" + role + ", email="
-				+ email + ", firstname=" + firstname + ", lastname=" + lastname + ", password=" + password + ", DOB="
-				+ DOB + ", gender=" + gender + ", title=" + title + ", externalId=" + externalId + ", createdAt="
-				+ createdAt + ", isactive=" + isactive + "]";
-	}
-
-
-
-
-
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+	
 
 	public User(int id, String username, String contactno, @NotBlank(message = "Role is mandatory") String role,
 			@Email(message = "Email should be valid") @NotBlank(message = "Email is mandatory") String email,
@@ -110,6 +96,33 @@ public class User {
 
 
 
+	public int isIsactive() {
+		return isactive;
+	}
+
+
+	public void setIsactive(int isactive) {
+		this.isactive = isactive;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", contactno=" + contactno + ", role=" + role + ", email="
+				+ email + ", firstname=" + firstname + ", lastname=" + lastname + ", password=" + password + ", DOB="
+				+ DOB + ", gender=" + gender + ", title=" + title + ", externalId=" + externalId + ", createdAt="
+				+ createdAt + ", isactive=" + isactive + "]";
+	}
+
+
+
+
+
+
+	public User(User user) {
+		// TODO Auto-generated constructor stub
+	}
 
 
 
@@ -264,6 +277,8 @@ public class User {
 	public String getCreatedAt() {
 		return createdAt;
 	}
+
+	
 
 
 }

@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.User;
@@ -22,8 +24,20 @@ public class UserService {
 	
 	private static final Logger log=LoggerFactory.getLogger(UserService.class);
 	
+
+	
+	private final BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	
 	@Autowired
 	private UserRepository userRepository;
+	
+	 public User loadUserByUsername(String username) throws UsernameNotFoundException {
+	        User user = userRepository.findByUsername(username); // Fetch user from the database
+	        if (user == null) {
+	            throw new UsernameNotFoundException("User not found");
+	        }
+	        return new User(user); // Custom UserDetails implementation
+	    }
 
 	public List<UserDTO> getAllUsers() {
 		log.info("getAllUsers : START - Fetching all users from database.");
@@ -75,8 +89,10 @@ public class UserService {
 		try {
 			String username=generateUsername(user.getFirstname(),user.getLastname());
 			String externalId=generateExternalId();
+			String hashedPassword=passwordEncoder.encode(user.getPassword());
 			user.setUsername(username);
 			user.setExternalId(externalId);
+			user.setPassword(hashedPassword);
 			User userFromDB=userRepository.save(user);
 			UserDTO userDTO = convertToUserDTO(userFromDB);
 			if(userDTO==null) {
