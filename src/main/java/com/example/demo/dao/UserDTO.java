@@ -1,16 +1,16 @@
 package com.example.demo.dao;
 
 import java.sql.Date;
+import java.util.List;
 
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 
 public class UserDTO {
 	
 	private String username;
 
-	private String role;
+	private List<Role> roles;
 	
 	private String email;
 	
@@ -33,25 +33,11 @@ public class UserDTO {
 	public UserDTO() {
 	}
 
-	
-
-	public String getContactno() {
-		return contactno;
-	}
-
-
-
-	public void setContactno(String contactno) {
-		this.contactno = contactno;
-	}
-
-
-
-	public UserDTO(String username, String role, String email, String firstname, String lastname, Date dOB,
+	public UserDTO(String username, List<Role> roles, String email, String firstname, String lastname, Date dOB,
 			String gender, String title, String externalId, String createdAt, String contactno) {
 		super();
 		this.username = username;
-		this.role = role;
+		this.roles = roles;
 		this.email = email;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -63,16 +49,12 @@ public class UserDTO {
 		this.contactno = contactno;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "UserDTO [username=" + username + ", role=" + role + ", email=" + email + ", firstname=" + firstname
+		return "UserDTO [username=" + username + ", roles=" + roles + ", email=" + email + ", firstname=" + firstname
 				+ ", lastname=" + lastname + ", DOB=" + DOB + ", gender=" + gender + ", title=" + title
 				+ ", externalId=" + externalId + ", createdAt=" + createdAt + ", contactno=" + contactno + "]";
 	}
-
-
 
 	public String getUsername() {
 		return username;
@@ -82,12 +64,12 @@ public class UserDTO {
 		this.username = username;
 	}
 
-	public String getRole() {
-		return role;
+	public List<Role> getRoles() {
+		return roles;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 	public String getEmail() {
@@ -153,7 +135,15 @@ public class UserDTO {
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
-	
-	
+
+	public String getContactno() {
+		return contactno;
+	}
+
+	public void setContactno(String contactno) {
+		this.contactno = contactno;
+	}
+
+
 
 }

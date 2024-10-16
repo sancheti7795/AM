@@ -9,9 +9,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dao.User;
+import com.example.demo.dao.UserEntity;
 import com.example.demo.dao.UserDTO;
 import com.example.demo.repository.UserRepository;
 
@@ -24,12 +25,15 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public List<UserDTO> getAllUsers() {
 		log.info("getAllUsers : START - Fetching all users from database.");
 		
 		try {
-			List<User> users=userRepository.findAll();
+			List<UserEntity> users=userRepository.findAll();
 			List<UserDTO> usersDTO=convertUsersToUserDTOs(users);
 			if(users.isEmpty()) {
 				log.warn("getAllUsers : No users found in database.");
@@ -48,9 +52,10 @@ public class UserService {
 		
 	}
 
-	private List<UserDTO> convertUsersToUserDTOs(List<User> users) {
+	private List<UserDTO> convertUsersToUserDTOs(List<UserEntity> users) {
+		log.info("convertUsersToUserDTOs : Converting Users to UserDTOs");
 		List<UserDTO> usersDTO= new ArrayList<UserDTO>();
-		for(User u : users) {
+		for(UserEntity u : users) {
 			UserDTO userDTO = new UserDTO();
 			userDTO.setCreatedAt(u.getCreatedAt());
 			userDTO.setDOB(u.getDOB());
@@ -59,7 +64,7 @@ public class UserService {
 			userDTO.setFirstname(u.getFirstname());
 			userDTO.setLastname(u.getLastname());
 			userDTO.setGender(u.getGender());
-			userDTO.setRole(u.getRole());
+			userDTO.setRoles(u.getRoles());
 			userDTO.setTitle(u.getTitle());
 			userDTO.setUsername(u.getUsername());
 			
@@ -69,15 +74,17 @@ public class UserService {
 		return usersDTO;
 	}
 
-	public UserDTO saveUser(User user) {
+	public UserDTO saveUser(UserEntity user) {
 		log.info("saveUser : START - Saving user to database.");
 		
 		try {
-			String username=generateUsername(user.getFirstname(),user.getLastname());
+			//String username=generateUsername(user.getFirstname(),user.getLastname());
 			String externalId=generateExternalId();
-			user.setUsername(username);
+			String encodedPassword=passwordEncoder.encode(user.getPassword());
+			//user.setUsername(username);
 			user.setExternalId(externalId);
-			User userFromDB=userRepository.save(user);
+			user.setPassword(encodedPassword);
+			UserEntity userFromDB=userRepository.save(user);
 			UserDTO userDTO = convertToUserDTO(userFromDB);
 			if(userDTO==null) {
 				log.warn("saveUser : Error occurred while saving user to database.");
@@ -98,7 +105,7 @@ public class UserService {
 	}
 
 	private String generateExternalId() {
-		
+		log.info("generateExternalId : Generating externalId for user.");
 		String externalId;
 		do {
 			externalId=generateRandomId();
@@ -108,7 +115,7 @@ public class UserService {
 	}
 
 	 private String generateRandomId() {
-
+		 log.info("generateRandomId : Generate a random ID to save to externalId with given characters.");
 		 String characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		 SecureRandom secureRandom=new SecureRandom();
 		 StringBuilder idBuilder=new StringBuilder(6);
@@ -125,6 +132,7 @@ public class UserService {
 
 	//Create username based on firstname & lastname
 	private String generateUsername(String firstname, String lastname) {
+		log.info("generateUsername : Generating userame with the help of firstname & lastname.");
 		String baseUsername=(firstname+"."+lastname).toLowerCase();
 		String username=baseUsername;
 		int count=1;
@@ -136,7 +144,8 @@ public class UserService {
 		return username;
 	}
 
-	private UserDTO convertToUserDTO(User u) {
+	private UserDTO convertToUserDTO(UserEntity u) {
+		log.info("convertToUserDTO : Converting single User to UserDTO.");
 		UserDTO userDTO = new UserDTO();
 		userDTO.setCreatedAt(u.getCreatedAt());
 		userDTO.setDOB(u.getDOB());
@@ -145,34 +154,46 @@ public class UserService {
 		userDTO.setFirstname(u.getFirstname());
 		userDTO.setLastname(u.getLastname());
 		userDTO.setGender(u.getGender());
-		userDTO.setRole(u.getRole());
-		userDTO.setTitle(u.getTitle());
+		userDTO.setRoles(u.getRoles());
+		userDTO.setRoles(u.getRoles());
 		userDTO.setUsername(u.getUsername());
 		userDTO.setContactno(u.getContactno());
 		return userDTO;
 	}
 
-	public String editUser(Long id, @Valid UserDTO userDTO) {
+	public String editUser(int id, @Valid UserDTO userDTO) {
+		log.info("editUser : START - Editing user with id - {} .",id);
 		
-		Optional<User> existingUserInDB=userRepository.findById(id);
-		if(!existingUserInDB.isPresent()) {
-			return "No user found!";
+		try {
+			Optional<UserEntity> existingUserInDB=userRepository.findById(id);
+			if(!existingUserInDB.isPresent()) {
+				return "No user found!";
+			}
+			
+			UserEntity existingUser=existingUserInDB.get();
+			
+			//Update fields
+			 	existingUser.setFirstname(userDTO.getFirstname());
+		        existingUser.setLastname(userDTO.getLastname());
+		        existingUser.setEmail(userDTO.getEmail());
+		        existingUser.setDOB(userDTO.getDOB());
+		        existingUser.setGender(userDTO.getGender());
+		        existingUser.setRoles(userDTO.getRoles());
+		        existingUser.setTitle(userDTO.getTitle());
+		        existingUser.setContactno(userDTO.getContactno());
+		        existingUser.setUsername(userDTO.getUsername());
+		        
+		        userRepository.save(existingUser);
+		        return "User edited successfully!";
 		}
 		
-		User existingUser=existingUserInDB.get();
-		
-		//Update fields
-		 	existingUser.setFirstname(userDTO.getFirstname());
-	        existingUser.setLastname(userDTO.getLastname());
-	        existingUser.setEmail(userDTO.getEmail());
-	        existingUser.setDOB(userDTO.getDOB());
-	        existingUser.setGender(userDTO.getGender());
-	        existingUser.setRole(userDTO.getRole());
-	        existingUser.setTitle(userDTO.getTitle());
-	        existingUser.setContactno(userDTO.getContactno());
-	        
-	        userRepository.save(existingUser);
-	        return "User edited successfully!";
+		catch(Exception e) {
+			log.error("editUser : Error while editing user with id - {}.", id, e);
+	        return "An error occurred while editing the user.";
+		}
+		finally {
+			log.info("editUser : END - Editing user with id - {} .",id);
+		}
 	       
 	}
 

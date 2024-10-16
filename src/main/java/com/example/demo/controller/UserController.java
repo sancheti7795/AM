@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dao.User;
+import com.example.demo.dao.UserEntity;
 import com.example.demo.dao.UserDTO;
 import com.example.demo.service.UserService;
 
@@ -54,7 +54,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/saveUser")
-	public ResponseEntity<UserDTO>  saveUser(@RequestBody @Valid User user) {
+	public ResponseEntity<UserDTO>  saveUser(@RequestBody @Valid UserEntity user) {
 		log.info("saveUser : START - Save user with username - {} .",(user.getFirstname()+"."+user.getLastname()));
 		
 		try {
@@ -77,7 +77,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/editUser/{id}")
-	public ResponseEntity<String> editUser(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO){
+	public ResponseEntity<String> editUser(@PathVariable int id, @RequestBody @Valid UserDTO userDTO){
 		log.info("editUser : START - Edit user with id {} .",id);
 		
 		
