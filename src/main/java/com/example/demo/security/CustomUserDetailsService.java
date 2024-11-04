@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.demo.dao.Role;
-import com.example.demo.dao.UserEntity;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.daos.Role;
+import com.example.demo.daos.UserEntity;
+import com.example.demo.repositories.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService{

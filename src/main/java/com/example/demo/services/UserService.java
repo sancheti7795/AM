@@ -1,9 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.services;
 
 import java.util.List;
 
-import com.example.demo.dao.UserDTO;
-import com.example.demo.dao.UserEntity;
+import com.example.demo.daos.UserDTO;
+import com.example.demo.daos.UserEntity;
 
 public interface UserService {
 	

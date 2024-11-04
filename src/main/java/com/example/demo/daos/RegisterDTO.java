@@ -1,21 +1,22 @@
-package com.example.demo.dao;
+package com.example.demo.daos;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
-public class LoginDTO {
-	
+public class RegisterDTO {
 	
 	private String username;
 	private String password;
 	
-	public LoginDTO(String username, String password) {
+	public RegisterDTO(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
 	}
 
-	public LoginDTO() {
+	public RegisterDTO() {
 		
 	}
 

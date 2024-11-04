@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import io.jsonwebtoken.security.Keys;
 
-import com.example.demo.constant.SecurityConstant;
+import com.example.demo.constants.SecurityConstant;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

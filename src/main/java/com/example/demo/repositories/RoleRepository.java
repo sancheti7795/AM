@@ -1,10 +1,10 @@
-package com.example.demo.repository;
+package com.example.demo.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.dao.Role;
+import com.example.demo.daos.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer>{
 	
