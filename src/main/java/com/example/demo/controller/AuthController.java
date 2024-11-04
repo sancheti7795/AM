@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +73,4 @@ public class AuthController {
 		return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
 	}
 	
-
 }
