@@ -31,7 +31,7 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use stateless session management
             .and()
             .authorizeRequests()
-            .requestMatchers("/auth/**").permitAll() // Public access to auth endpoints
+            .requestMatchers("/auth/**","/","/index.html").permitAll() // Public access to auth endpoints
             .anyRequest().authenticated() // All other requests require authentication
             .and()
             .httpBasic(); // Optional: can be removed if only using JWT

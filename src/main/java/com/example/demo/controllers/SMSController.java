@@ -22,7 +22,7 @@ public class SMSController {
 	private static final Logger log=LoggerFactory.getLogger(SMSController.class);
 	
 	private final static String ACCOUNT_SID = "AC628c19d8412514dcb41280ae78e4b198"; 
-    private final static String AUTH_ID = "33d8f2c494b8c9aa77e4e737bb1993e8"; 
+    private final static String AUTH_ID = "291a59508b22990e4808e579f618ba17"; 
     
     static { 
         Twilio.init(ACCOUNT_SID, AUTH_ID); 

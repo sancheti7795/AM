@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.daos.UserEntity;
+import com.example.demo.security.JWTGenerator;
 import com.example.demo.daos.UserDTO;
 import com.example.demo.services.UserService;
 
@@ -30,11 +33,28 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private JWTGenerator jwtGenerator;
+	
 	@GetMapping
-	public ResponseEntity<List<UserDTO>> getAllUsers(){
+	public ResponseEntity<List<UserDTO>> getAllUsers(HttpServletRequest request){
 		log.info("getAllUsers : START - Getting all users.");
 		
 		try {
+			
+			  // Extract token from Authorization header
+	        String token = request.getHeader("Authorization");
+	        if (token == null || !token.startsWith("Bearer ")) {
+	            throw new IllegalArgumentException("Missing or malformed JWT token");
+	        }
+
+	        // Remove "Bearer " prefix and validate the token
+	        token = token.substring(7);
+	        if (!jwtGenerator.validateToken(token)) {
+	            throw new IllegalArgumentException("Invalid JWT token");
+	        }
+	        
+	        
 			List<UserDTO> users=userService.getAllUsers();
 			if(users.isEmpty()) {
 				log.warn("getAllUsers : No users found.");
@@ -43,10 +63,15 @@ public class UserController {
 			log.info("getAllUsers : Successfully returning {} users.", users.size());
 			return ResponseEntity.ok(users);
 		}
+		catch (IllegalArgumentException e) {
+	        log.error("getAllUsers : ERROR - JWT token error: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
 		catch (Exception e) {
 			log.error("getAllUsers :ERROR - An exception occurred while fetching users.", e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+		
 		finally {
 			log.info("getAllUsers : END - Getting all users.");
 		}

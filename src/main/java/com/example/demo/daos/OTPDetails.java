@@ -1,5 +1,7 @@
 package com.example.demo.daos;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -9,12 +11,11 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class TwilioRequest {
+@AllArgsConstructor
+public class OTPDetails {
 	
-	private  String toPhoneNumber; 
-    private  String fromPhoneNumber; 
-    private  String message;
+	private String otp;
+    private LocalDateTime expirationTime;
 
 }

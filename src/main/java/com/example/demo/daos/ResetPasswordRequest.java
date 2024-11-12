@@ -9,12 +9,11 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class TwilioRequest {
+@AllArgsConstructor
+public class ResetPasswordRequest {
 	
-	private  String toPhoneNumber; 
-    private  String fromPhoneNumber; 
-    private  String message;
+	private LoginDTO loginDTO;
+	private String otp;
 
 }

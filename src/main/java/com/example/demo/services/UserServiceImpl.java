@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         log.info("saveUser : START - Saving user with username: {}", user.getUsername());
 
         try {
+        	
             // Encode password only if not already encoded
             if (!isPasswordEncoded(user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -80,13 +81,13 @@ public class UserServiceImpl implements UserService {
         }
     }
     
-    private boolean isPasswordEncoded(String password) {
+    public boolean isPasswordEncoded(String password) {
         return password != null && password.startsWith("{bcrypt}");
     }
 
 
 
-    private String generateExternalId() {
+    public String generateExternalId() {
         log.info("Generating externalId for user.");
         String externalId;
         do {
